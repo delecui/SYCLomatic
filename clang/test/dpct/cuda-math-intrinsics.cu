@@ -2239,9 +2239,7 @@ __global__ void testUnsupported() {
   f = norm3df(f, f, f);
   // CHECK: f = sycl::fast_length(sycl::float4(f, f, f, f));
   f = norm4df(f, f, f, f);
-  // CHECK: /*
-  // CHECK-NEXT: DPCT1007:{{[0-9]+}}: Migration of normcdff is not supported.
-  // CHECK-NEXT: */
+  // CHECK: f = sycl::normcdf(f);
   f = normcdff(f);
   // CHECK: /*
   // CHECK-NEXT: DPCT1007:{{[0-9]+}}: Migration of normcdfinvf is not supported.
@@ -2314,9 +2312,7 @@ __global__ void testUnsupported() {
   d = norm3d(d, d, d);
   // CHECK: d = sycl::fast_length(sycl::float4(d, d, d, d));
   d = norm4d(d, d, d, d);
-  // CHECK: /*
-  // CHECK-NEXT: DPCT1007:{{[0-9]+}}: Migration of normcdf is not supported.
-  // CHECK-NEXT: */
+  // CHECK: d = sycl::normcdf(d);
   d = normcdf(d);
   // CHECK: /*
   // CHECK-NEXT: DPCT1007:{{[0-9]+}}: Migration of normcdfinv is not supported.
