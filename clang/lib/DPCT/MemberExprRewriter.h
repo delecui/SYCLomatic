@@ -52,6 +52,46 @@ public:
           BaseNameCreator(ME), IsArrowCreator(ME), MemberExprCreator(ME)) {}
 };
 
+template <class BaseNameT, class IndexT>
+class MemberExprSubscriptRewriter
+    : public MemberExprPrinterRewriter<MemberExprSubscriptPrinter<BaseNameT, IndexT>> {
+public:
+    using BaseTy = MemberExprPrinterRewriter<MemberExprSubscriptPrinter<BaseNameT, IndexT>>;
+    MemberExprSubscriptRewriter(
+      const MemberExpr *ME,
+      const std::function<BaseNameT(const MemberExpr *)> &BaseNameCreator,
+      const std::function<IndexT(const MemberExpr *)> &IndexCreator):
+        MemberExprPrinterRewriter<MemberExprSubscriptPrinter<BaseNameT, IndexT>>(ME,
+          BaseNameCreator(ME), IndexCreator(ME)) {}
+    Optional<std::string> rewrite() override {
+      auto Result = BaseTy::rewrite();
+      if (Result.has_value()) {
+        if (const InitListExpr *ILE =
+                DpctGlobalInfo::findAncestor<InitListExpr>(this->ME)) {
+          // E.g.,
+          // dim3 d3; int64_t{d3.x};
+          // will be migratd to
+          // sycl::range<3> d3; int64_t{d3[2]};
+          //
+          // 'd3[2]' should be cast to 'int64_t' to avoid 'size_t -> long' narrowing-down
+          // error in initializer list. 'int64_t' is canonical to 'long'.
+          if (ILE->getNumInits() == 1 &&
+              DpctGlobalInfo::getUnqualifiedTypeName(
+                  ILE->getType().getCanonicalType()) == "long") {
+            std::string ResultCast;
+            llvm::raw_string_ostream OS(ResultCast);
+            OS << "static_cast<";
+            OS << DpctGlobalInfo::getUnqualifiedTypeName(ILE->getType());
+            OS << ">";
+            OS << "(" + Result.value() + ")";
+            return ResultCast;
+          }
+        }
+      }
+      return Result;
+    }
+};
+
 class MemberExprRewriterFactoryBase {
   public:
   virtual std::shared_ptr<MemberExprBaseRewriter> create(const MemberExpr *ME) const = 0;

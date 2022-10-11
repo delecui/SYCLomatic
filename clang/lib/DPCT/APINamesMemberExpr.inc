@@ -36,3 +36,12 @@ MEMBER_REWRITE_ENTRY(
     "cudaPointerAttributes.isManaged",
     MEMBER_FACTORY(MEM_BASE, IS_ARROW, MEM_CALL("is_memory_shared"))
 )
+
+MEMBER_REWRITE_ENTRY("dim3.x", MEMBER_SUBSCRIPT_FACTORY(MEM_SUBSCRIPT_BASE,
+                                                        SUBSCRIPT_INDEX))
+
+MEMBER_REWRITE_ENTRY("dim3.y", MEMBER_SUBSCRIPT_FACTORY(MEM_SUBSCRIPT_BASE,
+                                                        SUBSCRIPT_INDEX))
+
+MEMBER_REWRITE_ENTRY("dim3.z", MEMBER_SUBSCRIPT_FACTORY(MEM_SUBSCRIPT_BASE,
+                                                        SUBSCRIPT_INDEX))

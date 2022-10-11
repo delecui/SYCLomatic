@@ -917,6 +917,21 @@ public:
   }
 };
 
+template <class BaseT, class IndexT> class MemberExprSubscriptPrinter {
+  BaseT Base;
+  IndexT Index;
+
+public:
+  MemberExprSubscriptPrinter(const BaseT &Base, IndexT Index)
+      : Base(Base), Index(Index) {}
+
+  template <class StreamT> void print(StreamT &Stream) const {
+    dpct::print(Stream, Base);
+    // Index(e.g., '[1]') for subscript expression (e.g., 'range[1]')
+    dpct::print(Stream, Index);
+  }
+};
+
 template <class BaseT, class MemberT> class StaticMemberExprPrinter {
   BaseT Base;
   MemberT Member;

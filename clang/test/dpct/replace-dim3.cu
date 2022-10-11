@@ -109,8 +109,8 @@ int main() {
   // CHECK: sycl::range<3> test_1(NUM, NUM, NUM);
   dim3 test_1(NUM, NUM, NUM);
 
-  // CHECK: int b = test[2] + test [1] + test [0];
-  int b = test.x + test. y + test .z;
+  // CHECK: int b = test[2] + test[1] + test[0];
+  int b = test.x + test.y + test.z;
   // CHECK: sycl::range<3> *p = &test;
   dim3 *p = &test;
   // CHECK: sycl::range<3> **pp = &p;

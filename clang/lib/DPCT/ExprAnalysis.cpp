@@ -587,6 +587,11 @@ void ExprAnalysis::analyzeExpr(const IntegerLiteral *IL) {
   }
 }
 
+void ExprAnalysis::analyzeExpr(const InitListExpr *ILE) {
+  for (const auto &Init : ILE->inits())
+    dispatch(Init);
+}
+
 void ExprAnalysis::analyzeExpr(const CXXUnresolvedConstructExpr *Ctor) {
   analyzeType(Ctor->getTypeSourceInfo()->getTypeLoc());
   for (auto It = Ctor->arg_begin(); It != Ctor->arg_end(); It++) {
