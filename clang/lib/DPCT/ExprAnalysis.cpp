@@ -676,7 +676,8 @@ void ExprAnalysis::analyzeExpr(const MemberExpr *ME) {
       auto Result = Rewriter->rewrite();
       if (Result.hasValue()) {
         auto ResultStr = Result.getValue();
-        addReplacement(ME->getBeginLoc(), ME->getEndLoc(), Result.getValue());
+        auto range = getTheLastCompleteImmediateRange(ME->getBeginLoc(), ME->getEndLoc());
+        addReplacement(range.first, range.second, Result.getValue());
       }
       return;
     }

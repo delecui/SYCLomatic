@@ -42,6 +42,10 @@ std::function<std::string(const MemberExpr *)> makeMemberBase() {
     auto Base = ME->getBase()->IgnoreImpCasts();
     if (!Base)
       return "";
+// ArgumentAnalysis AA;
+// AA.setCallSpelling(ME);
+// AA.analyze(Base);
+// return AA.getRewriteString();
     return getStmtSpelling(Base);
   };
 }
